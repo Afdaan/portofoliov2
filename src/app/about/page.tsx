@@ -2,30 +2,29 @@
 
 import { useEffect } from 'react'
 import Header from '@/components/Header'
-import Hero from '@/components/Hero'
+import About from '@/components/About'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
 import { portfolioConfig } from '@/config/portfolio'
 
-export default function Home() {
+export default function AboutPage() {
   const { startLoading, stopLoading } = useLoading()
 
   useEffect(() => {
-    // Initial page load animation
     startLoading()
     const timer = setTimeout(() => {
       stopLoading()
-    }, portfolioConfig.pageLoading.homePage)
+    }, portfolioConfig.pageLoading.aboutPage)
     return () => clearTimeout(timer)
   }, [startLoading, stopLoading])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main>
+      <main className="pt-20">
         <PageTransition>
-          <Hero />
+          <About />
         </PageTransition>
       </main>
       <Footer />
