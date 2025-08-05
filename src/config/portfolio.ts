@@ -465,13 +465,13 @@ education: [
     }
   },
 
-  // Page loading configuration
+  // Page loading configuration (optimized for mobile)
   pageLoading: {
-    homePage: 1500, // milliseconds
-    aboutPage: 1000,
-    projectsPage: 1000,
-    skillsPage: 1000,
-    contactPage: 1000
+    homePage: 800, // reduced from 1500
+    aboutPage: 500, // reduced from 1000
+    projectsPage: 500, // reduced from 1000
+    skillsPage: 600, // reduced from 1000
+    contactPage: 400 // reduced from 1000
   },
 
   // Loader Configuration
@@ -487,18 +487,18 @@ education: [
       totalExpressions: 5 // Total number of expression images (1 to N)
     },
     timing: {
-      expressionChange: 600, // milliseconds between expression changes (faster = more dynamic)
-      progressStep: 3.33, // progress increment per step (higher = faster loading)
-      progressInterval: 100, // milliseconds between progress updates
-      completionDelay: 300 // delay before calling onComplete (shorter = faster transition)
+      expressionChange: 800, // slower for better mobile performance (was 600)
+      progressStep: 5, // faster loading (was 3.33)
+      progressInterval: 120, // slightly slower updates (was 100)
+      completionDelay: 200 // faster completion (was 300)
     },
     animations: {
-      borderGradient: 1.5, // seconds per border gradient cycle (faster = more vibrant)
-      avatarRing: 3, // seconds per avatar ring rotation (faster = more dynamic)
-      avatarScale: 1.2, // seconds per avatar scale animation cycle
-      textGradient: 1.2, // seconds per text gradient animation cycle
-      progressShine: 0.8, // seconds per progress bar shine sweep (faster = more frequent)
-      loadingSpinner: 0.6 // seconds per loading spinner rotation (faster = more responsive)
+      borderGradient: 2, // slower for mobile (was 1.5)
+      avatarRing: 4, // slower for mobile (was 3)
+      avatarScale: 1.5, // slower for mobile (was 1.2)
+      textGradient: 1.5, // slower for mobile (was 1.2)
+      progressShine: 1, // slower for mobile (was 0.8)
+      loadingSpinner: 0.8 // slightly slower (was 0.6)
     }
   }
 };

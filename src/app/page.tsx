@@ -12,11 +12,15 @@ export default function Home() {
   const { startLoading, stopLoading } = useLoading()
 
   useEffect(() => {
-    // Initial page load animation
+    // Initial page load animation - much faster for mobile
     startLoading()
+    
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const loadingTime = isMobile ? 100 : (portfolioConfig.pageLoading?.homePage || 300)
+    
     const timer = setTimeout(() => {
       stopLoading()
-    }, portfolioConfig.pageLoading.homePage)
+    }, loadingTime)
     return () => clearTimeout(timer)
   }, [startLoading, stopLoading])
 

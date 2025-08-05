@@ -13,9 +13,14 @@ export default function ProjectsPage() {
 
   useEffect(() => {
     startLoading()
+    
+    // Much faster loading for mobile
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.projectsPage || 500)
+    
     const timer = setTimeout(() => {
       stopLoading()
-    }, portfolioConfig.pageLoading.projectsPage)
+    }, loadingTime)
     return () => clearTimeout(timer)
   }, [startLoading, stopLoading])
 

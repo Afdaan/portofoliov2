@@ -13,9 +13,14 @@ export default function ContactPage() {
 
   useEffect(() => {
     startLoading()
+    
+    // Much faster loading for mobile
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.contactPage || 500)
+    
     const timer = setTimeout(() => {
       stopLoading()
-    }, portfolioConfig.pageLoading.contactPage)
+    }, loadingTime)
     return () => clearTimeout(timer)
   }, [startLoading, stopLoading])
 

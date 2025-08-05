@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import Header from '@/components/Header'
-import AboutSimple from '@/components/AboutSimple'
+import About from '@/components/About'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
@@ -37,8 +37,6 @@ export default function AboutPage() {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    console.log('About page mounting')
-    
     try {
       // Check if portfolio config is available
       if (!portfolioConfig) {
@@ -48,13 +46,15 @@ export default function AboutPage() {
       setMounted(true)
       startLoading()
       
+      // Much faster loading for mobile
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+      const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.aboutPage || 500)
+      
       const timer = setTimeout(() => {
-        console.log('About page loading complete')
         stopLoading()
-      }, portfolioConfig.pageLoading?.aboutPage || 1000)
+      }, loadingTime)
       
       return () => {
-        console.log('About page unmounting')
         clearTimeout(timer)
       }
     } catch (err) {
@@ -80,7 +80,7 @@ export default function AboutPage() {
       <main className="pt-20">
         <PageTransition>
           <Suspense fallback={<AboutLoading />}>
-            <AboutSimple />
+            <About />
           </Suspense>
         </PageTransition>
       </main>

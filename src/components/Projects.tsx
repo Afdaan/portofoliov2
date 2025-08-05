@@ -1,27 +1,27 @@
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, memo } from 'react'
+"use client"
+
+import { useState, useEffect } from 'react'
 import { ExternalLink, Github, CheckCircle2, Clock, Pause } from 'lucide-react'
 import { portfolioConfig } from '@/config/portfolio'
 import Image from 'next/image'
 
 const Projects = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const [mounted, setMounted] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  }
-
-  const staggerContainer = {
-    animate: {
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  }
+  useEffect(() => {
+    setMounted(true)
+    
+    // Immediate trigger for mobile, slight delay for desktop
+    const isMobile = window.innerWidth <= 768
+    const delay = isMobile ? 0 : 100
+    
+    const timer = setTimeout(() => {
+      setIsVisible(true)
+    }, delay)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -52,55 +52,114 @@ const Projects = () => {
     }
   }
 
+  if (!mounted) {
+    return (
+      <div className="py-20 lg:py-32">
+        <div className="container mx-auto px-4 text-center">
+          <div>Loading Projects...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!portfolioConfig || !portfolioConfig.projects) {
+    return (
+      <div className="py-20 lg:py-32">
+        <div className="container mx-auto px-4 text-center">
+          <div>Configuration error</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <section ref={ref} id="projects" className="py-20 lg:py-32 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
+    <section className="py-20 lg:py-32 relative overflow-hidden">
+      {/* Ultra-lightweight CSS optimized for mobile */}
+      <style jsx>{`
+        .fade-in {
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        
+        .fade-in.visible {
+          opacity: 1;
+        }
+        
+        .hover-lift {
+          transition: transform 0.2s ease;
+        }
+        
+        /* Desktop-only animations and transforms */
+        @media (min-width: 769px) {
+          .fade-in {
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+          }
+          
+          .fade-in.visible {
+            transform: translateY(0);
+          }
+          
+          .hover-lift:hover {
+            transform: translateY(-2px);
+          }
+        }
+        
+        /* Mobile: disable all transforms and heavy effects */
+        @media (max-width: 768px) {
+          .fade-in {
+            transform: none !important;
+            transition: opacity 0.2s ease !important;
+          }
+          
+          .hover-lift {
+            transition: none !important;
+          }
+          
+          .hover-lift:hover {
+            transform: none !important;
+          }
+          
+          /* Reduce blur effects on mobile */
+          .backdrop-blur-sm {
+            backdrop-filter: none !important;
+          }
+          
+          .blur-3xl {
+            filter: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Background Elements - Hidden on mobile for performance */}
+      <div className="absolute inset-0 -z-10 hidden md:block">
         <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial="initial"
-          animate={isInView ? "animate" : "initial"}
-          variants={staggerContainer}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6"
-          >
+        <div className="text-center mb-16">
+          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 fade-in ${isVisible ? 'visible' : ''}`}>
             {portfolioConfig.projects.title}
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-          >
+          </h2>
+          <p className={`text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed fade-in ${isVisible ? 'visible' : ''}`}>
             {portfolioConfig.projects.description}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         {/* Projects Grid */}
-        <motion.div
-          initial="initial"
-          animate={isInView ? "animate" : "initial"}
-          variants={staggerContainer}
-          className="space-y-12"
-        >
+        <div className="space-y-12">
           {portfolioConfig.projects.items.map((project, index) => (
-            <motion.div
+            <div
               key={project.id}
-              variants={fadeInUp}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center fade-in ${isVisible ? 'visible' : ''} ${
                 index % 2 === 1 ? 'lg:flex-row-reverse' : ''
               }`}
             >
               {/* Project Image */}
               <div className={`${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative group hover-lift">
                   <div className="relative overflow-hidden rounded-xl bg-card border border-border">
                     <Image
                       src={project.image || '/images/project-placeholder.jpg'}
@@ -127,32 +186,36 @@ const Projects = () => {
                 </div>
 
                 {/* Features */}
-                <div>
-                  <h4 className="font-semibold mb-3">Key Features:</h4>
-                  <ul className="space-y-2">
-                    {project.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {project.features && project.features.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-3">Key Features:</h4>
+                    <ul className="space-y-2">
+                      {project.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Technologies */}
-                <div>
-                  <h4 className="font-semibold mb-3">Technologies Used:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech, idx) => (
-                      <span
-                        key={idx}
-                        className="px-3 py-1 bg-accent/20 text-accent-foreground rounded-full text-sm font-medium"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+                {project.technologies && project.technologies.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-3">Technologies Used:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-accent/20 text-accent-foreground rounded-full text-sm font-medium"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Links */}
                 <div className="flex gap-4">
@@ -161,64 +224,31 @@ const Projects = () => {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all hover:scale-105"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium"
                     >
                       <ExternalLink className="w-4 h-4" />
-                      <span>Live Demo</span>
+                      Live Demo
                     </a>
                   )}
-                  {project.showCode && (
+                  {project.showCode && project.githubUrl && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg hover:bg-accent transition-all hover:scale-105"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-colors duration-200 font-medium"
                     >
                       <Github className="w-4 h-4" />
-                      <span>View Code</span>
+                      Source Code
                     </a>
                   )}
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-16"
-        >
-          <div className="max-w-2xl mx-auto p-8 bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl border border-primary/20">
-            <h3 className="text-2xl font-bold mb-4">Have a Project in Mind?</h3>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              I&apos;m always excited to work on new projects and bring innovative ideas to life. 
-              Let&apos;s discuss how we can collaborate to create something amazing together.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href={`mailto:${portfolioConfig.personal.email}`}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all hover:scale-105"
-              >
-                Let&apos;s Talk
-              </a>
-              <a
-                href={portfolioConfig.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-card border border-border rounded-lg hover:bg-accent transition-all hover:scale-105"
-              >
-                <Github className="w-4 h-4" />
-                View All Projects
-              </a>
             </div>
-          </div>
-        </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )
 }
 
-export default memo(Projects)
+export default Projects

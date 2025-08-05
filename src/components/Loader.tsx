@@ -1,9 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
-import Image from "next/image";
-import { portfolioConfig } from "@/config/portfolio";
+import { useEffect, useState } from "react";
 
 interface LoaderProps {
   isLoading: boolean;
@@ -11,245 +9,231 @@ interface LoaderProps {
 }
 
 const Loader = ({ isLoading, onComplete }: LoaderProps) => {
-  const [currentExpression, setCurrentExpression] = useState(1);
   const [progress, setProgress] = useState(0);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  const { loader } = portfolioConfig;
-
-  // Generate expressions array based on config
-  const expressions = useMemo(() => 
-    Array.from({ length: loader.characterImages.totalExpressions }, (_, i) => i + 1), 
-    [loader.characterImages.totalExpressions]
-  );
-
-  // Preload all character images using config
-  useEffect(() => {
-    const preloadImages = async () => {
-      try {
-        const imagePromises = expressions.map((expr) => {
-          return new Promise((resolve, reject) => {
-            const img = new window.Image();
-            img.onload = resolve;
-            img.onerror = reject;
-            img.src = `${loader.characterImages.basePath}${expr}${loader.characterImages.fileExtension}`;
-          });
-        });
-
-        await Promise.all(imagePromises);
-        setImagesLoaded(true);
-      } catch (error) {
-        console.error("Failed to preload images:", error);
-        setImagesLoaded(true); // Continue anyway
-      }
-    };
-
-    preloadImages();
-  }, [expressions, loader]);
+  const [loadingMessage, setLoadingMessage] = useState('Loading...');
+  const [currentAlyaImage, setCurrentAlyaImage] = useState(1);
 
   useEffect(() => {
-    if (isLoading && imagesLoaded) {
-      // Change expression based on config timing
-      const expressionTimer = setInterval(() => {
-        setCurrentExpression((prev) => {
-          const nextIndex = (expressions.indexOf(prev) + 1) % expressions.length;
-          return expressions[nextIndex];
-        });
-      }, loader.timing.expressionChange);
+    // Cute loading messages with Alya theme - defined inside useEffect to avoid dependency issues
+    const loadingMessages = [
+      'Alya is preparing everything...',
+      'Loading with love from Alya...',
+      'Almost ready, thanks for waiting!',
+      'Alya is working her magic...',
+      'Just a moment more!'
+    ];
 
-      // Faster progress animation using config
+    // Cycle through loading messages
+    const messageInterval = setInterval(() => {
+      setLoadingMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
+    }, 1500);
+
+    return () => clearInterval(messageInterval);
+  }, []);
+
+  // Alya images array (alya1.jpg to alya5.jpg)
+  const alyaImages = [
+    '/images/alya1.jpg',
+    '/images/alya2.jpg', 
+    '/images/alya3.jpg',
+    '/images/alya4.jpg',
+    '/images/alya5.jpg'
+  ];
+
+  useEffect(() => {
+    // Cycle through Alya images more frequently for smooth transition
+    const imageInterval = setInterval(() => {
+      setCurrentAlyaImage(prev => (prev % 5) + 1);
+    }, 800); // Change image every 800ms
+
+    return () => clearInterval(imageInterval);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      // Much faster progress for mobile
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const progressStep = isMobile ? 20 : 10; // Faster steps on mobile
+      const progressInterval = isMobile ? 50 : 100; // Faster interval on mobile
+      
       const progressTimer = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(progressTimer);
-            // Configurable completion delay
-            setTimeout(() => onComplete?.(), loader.timing.completionDelay);
+            // Minimal completion delay
+            setTimeout(() => onComplete?.(), isMobile ? 100 : 200);
             return 100;
           }
-          return prev + loader.timing.progressStep;
+          return prev + progressStep;
         });
-      }, loader.timing.progressInterval);
+      }, progressInterval);
 
       return () => {
-        clearInterval(expressionTimer);
         clearInterval(progressTimer);
       };
     } else if (!isLoading) {
-      // Reset state when not loading
-      setCurrentExpression(1);
       setProgress(0);
     }
-  }, [isLoading, imagesLoaded, onComplete, expressions, loader]);
+  }, [isLoading, onComplete]);
 
   return (
     <AnimatePresence>
       {isLoading && (
         <>
-          {/* Modern backdrop with subtle gradient */}
+          {/* Simple backdrop - no blur on mobile */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999] bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-md"
+            className="fixed inset-0 z-[99999] bg-background/95 md:backdrop-blur-sm"
           />
 
-          {/* Main loader container */}
+          {/* Minimal loader */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-[99999] flex items-center justify-center p-6"
           >
-            {/* Glass morphism card */}
-            <div className="relative">
-              {/* Animated gradient border */}
-              <motion.div
-                animate={{
-                  background: [
-                    "linear-gradient(45deg, #f59e0b, #3b82f6, #8b5cf6, #f59e0b)",
-                    "linear-gradient(135deg, #3b82f6, #8b5cf6, #f59e0b, #3b82f6)",
-                    "linear-gradient(225deg, #8b5cf6, #f59e0b, #3b82f6, #8b5cf6)",
-                    "linear-gradient(315deg, #f59e0b, #3b82f6, #8b5cf6, #f59e0b)",
-                  ],
-                }}
-                transition={{ duration: loader.animations.borderGradient, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-1 rounded-3xl opacity-75 blur-sm"
-              />
+            {/* Mobile-optimized CSS */}
+            <style jsx>{`
+              @media (max-width: 768px) {
+                /* Disable heavy animations on mobile */
+                .mobile-light * {
+                  animation-duration: 0.5s !important;
+                  transition-duration: 0.2s !important;
+                }
+              }
+              
+              /* Force circular shape for all images */
+              .alya-avatar {
+                width: 80px !important;
+                height: 80px !important;
+                border-radius: 50% !important;
+                overflow: hidden !important;
+                position: relative !important;
+              }
+              
+              .alya-avatar img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+                border-radius: 50% !important;
+                display: block !important;
+              }
+            `}</style>
 
-              {/* Main glass card */}
-              <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl min-w-[300px]">
-                {/* Subtle inner glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 rounded-2xl" />
-
-                <div className="relative z-10 text-center">
-                  {/* Character avatar with modern styling */}
-                  {imagesLoaded ? (
-                    <motion.div
-                      key={currentExpression}
-                      initial={{ scale: 0.8, opacity: 0, rotateY: 15 }}
-                      animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                      exit={{ scale: 0.8, opacity: 0, rotateY: -15 }}
-                      transition={{ duration: 0.5, ease: "backOut" }}
-                      className="w-28 h-28 mx-auto mb-8 relative"
-                    >
-                      {/* Animated ring around avatar */}
-                      <motion.div
-                        animate={{
-                          rotate: 360,
-                          scale: [1, 1.05, 1],
-                        }}
-                        transition={{
-                          rotate: { duration: loader.animations.avatarRing, repeat: Infinity, ease: "linear" },
-                          scale: { duration: loader.animations.avatarScale, repeat: Infinity },
-                        }}
-                        className="absolute -inset-2 bg-gradient-to-r from-amber-400/40 via-blue-500/40 to-purple-500/40 rounded-full blur-md"
-                      />
-
-                      {/* Character image */}
-                      <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-white/30 shadow-xl bg-gradient-to-br from-white/10 to-white/5">
-                        <Image
-                          src={`${loader.characterImages.basePath}${currentExpression}${loader.characterImages.fileExtension}`}
-                          alt={`Character Expression ${currentExpression}`}
-                          width={112}
-                          height={112}
-                          className="object-cover w-full h-full transition-all duration-500 hover:scale-110"
-                          priority
-                        />
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <div className="w-28 h-28 mx-auto mb-8 relative">
-                      <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/40 via-blue-500/40 to-purple-500/40 rounded-full blur-md animate-pulse" />
-                      <div className="relative w-full h-full rounded-full border-3 border-white/30 bg-white/10 flex items-center justify-center backdrop-blur-sm">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: loader.animations.loadingSpinner, repeat: Infinity, ease: "linear" }}
-                          className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Modern loading text */}
-                  <motion.div
-                    animate={{
-                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            <div className="text-center mobile-light">
+              {/* Alya Avatar with image transition animation */}
+              <div className="w-20 h-20 mx-auto mb-6 relative">
+                <motion.div
+                  className="w-full h-full rounded-full overflow-hidden border-2 border-primary/30 relative alya-avatar"
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    overflow: 'hidden'
+                  }}
+                  animate={{ 
+                    scale: typeof window !== 'undefined' && window.innerWidth <= 768 
+                      ? [1, 1.02, 1] // Lighter animation for mobile
+                      : [1, 1.05, 1], // Full animation for desktop
+                    rotate: typeof window !== 'undefined' && window.innerWidth <= 768 
+                      ? [0, 2, -2, 0] // Smaller rotation for mobile
+                      : [0, 5, -5, 0]
+                  }}
+                  transition={{ 
+                    duration: typeof window !== 'undefined' && window.innerWidth <= 768 ? 1.5 : 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {/* Transitioning Alya images */}
+                  <motion.img
+                    key={currentAlyaImage}
+                    src={alyaImages[currentAlyaImage - 1]}
+                    alt={`Alya Loading ${currentAlyaImage}`}
+                    className="w-full h-full object-cover object-center"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.2 }}
+                    transition={{ 
+                      duration: typeof window !== 'undefined' && window.innerWidth <= 768 ? 0.3 : 0.5,
+                      ease: "easeInOut"
                     }}
-                    transition={{ duration: loader.animations.textGradient, repeat: Infinity }}
-                    className="bg-gradient-to-r from-amber-400 via-blue-500 to-purple-500 bg-[length:200%_100%] bg-clip-text text-transparent"
-                  >
-                    <h3 className="text-2xl font-bold mb-2">{loader.title}</h3>
-                  </motion.div>
-
-                  <motion.p
-                    key={imagesLoaded ? "loaded" : "loading"}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-sm text-white/70 mb-8"
-                  >
-                    {imagesLoaded ? loader.preparedText : loader.loadingText}
-                  </motion.p>
-
-                  {/* Modern progress bar */}
-                  <div className="relative mb-6">
-                    <div className="w-72 h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/20">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${imagesLoaded ? progress : 0}%` }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="h-full bg-gradient-to-r from-amber-400 via-blue-500 to-purple-500 rounded-full relative overflow-hidden"
-                      >
-                        {/* Animated shine effect */}
-                        <motion.div
-                          animate={{ x: ["-100%", "200%"] }}
-                          transition={{ duration: loader.animations.progressShine, repeat: Infinity, ease: "easeInOut" }}
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-1/2"
-                        />
-                      </motion.div>
-                    </div>
-
-                    {/* Progress percentage */}
-                    <div className="flex justify-between items-center mt-3">
-                      <span className="text-xs text-white/50 font-medium">{loader.progressLabel}</span>
-                      <motion.span
-                        key={Math.floor(progress / 10)}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="text-sm font-bold text-white"
-                      >
-                        {Math.round(imagesLoaded ? progress : 0)}%
-                      </motion.span>
-                    </div>
-                  </div>
-
-                  {/* Expression indicators - only show when loaded */}
-                  {imagesLoaded && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="flex justify-center gap-2"
-                    >
-                      {expressions.map((expr) => (
-                        <motion.div
-                          key={expr}
-                          animate={{
-                            scale: expr === currentExpression ? 1.2 : 1,
-                            opacity: expr === currentExpression ? 1 : 0.4,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className={`w-2.5 h-2.5 rounded-full transition-all ${
-                            expr === currentExpression
-                              ? "bg-gradient-to-r from-amber-400 to-purple-500 shadow-lg"
-                              : "bg-white/30"
-                          }`}
-                        />
-                      ))}
-                    </motion.div>
-                  )}
-                </div>
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                      borderRadius: '50%',
+                      imageRendering: 'auto',
+                      filter: 'brightness(1.1) contrast(1.1)'
+                    }}
+                  />
+                </motion.div>
+                
+                {/* Light ring animation around avatar - disabled on mobile */}
+                {typeof window !== 'undefined' && window.innerWidth > 768 && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-primary/50"
+                    animate={{ 
+                      rotate: 360,
+                      scale: [1, 1.1, 1]
+                    }}
+                    transition={{ 
+                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+                      scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                    }}
+                  />
+                )}
               </div>
+
+              {/* Loading text with animation */}
+              <motion.h2 
+                className="text-xl font-bold mb-4"
+                key={loadingMessage}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {loadingMessage}
+              </motion.h2>
+
+              {/* Enhanced progress bar with Alya theme */}
+              <div className="w-64 h-2 bg-muted rounded-full mx-auto mb-2 overflow-hidden relative">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full relative"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {/* Shimmer effect - lighter on mobile */}
+                  {(typeof window === 'undefined' || window.innerWidth > 768) && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      animate={{ x: ['-100%', '100%'] }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        ease: "linear" 
+                      }}
+                    />
+                  )}
+                </motion.div>
+              </div>
+
+              {/* Progress percentage with cute styling */}
+              <motion.p 
+                className="text-sm text-muted-foreground"
+                animate={{ scale: progress === 100 ? [1, 1.1, 1] : 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                {progress === 100 ? '✨ Ready! ✨' : `${Math.round(progress)}%`}
+              </motion.p>
             </div>
           </motion.div>
         </>
