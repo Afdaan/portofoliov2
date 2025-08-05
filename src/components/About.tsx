@@ -22,14 +22,27 @@ const About = () => {
     setMounted(true)
   }, [])
 
-  // Debug logging for Vercel
+  // Debug logging for Vercel with more details
   console.log('About component rendering', {
     experienceCount: portfolioConfig.experience?.length,
     educationCount: portfolioConfig.education?.length,
     isInView,
     mounted,
-    hasValidConfig: !!(portfolioConfig && portfolioConfig.about && portfolioConfig.experience && portfolioConfig.education)
+    hasValidConfig: !!(portfolioConfig && portfolioConfig.about && portfolioConfig.experience && portfolioConfig.education),
+    portfolioConfigKeys: portfolioConfig ? Object.keys(portfolioConfig) : 'null',
+    aboutKeys: portfolioConfig?.about ? Object.keys(portfolioConfig.about) : 'null'
   })
+
+  // Additional error catching for production debugging
+  try {
+    if (typeof window !== 'undefined') {
+      console.log('Window object available, client-side rendering')
+    } else {
+      console.log('Server-side rendering detected')
+    }
+  } catch (err) {
+    console.error('Error checking window object:', err)
+  }
 
   // More robust safety checks
   try {

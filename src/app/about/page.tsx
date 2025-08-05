@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import Header from '@/components/Header'
-import About from '@/components/About'
+import AboutSimple from '@/components/AboutSimple'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
@@ -80,7 +80,7 @@ export default function AboutPage() {
       <main className="pt-20">
         <PageTransition>
           <Suspense fallback={<AboutLoading />}>
-            <About />
+            <AboutSimple />
           </Suspense>
         </PageTransition>
       </main>
