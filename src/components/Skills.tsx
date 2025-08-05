@@ -39,6 +39,7 @@ import {
   SiSlack
 } from 'react-icons/si'
 import { Layers } from 'lucide-react'
+import type { FunctionComponent, SVGProps, ReactElement } from 'react'
 
 // SVG Icon untuk Zimbra Mail
 const ZimbraMailIcon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -85,7 +86,9 @@ const RestApiIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 // Icon mapping untuk skills
 function getSkillIcon(iconName: string) {
-  const iconMap: Record<string, React.ComponentType<any>> = {
+  type IconType = FunctionComponent<{ className?: string }>;
+  type SvgIconType = (props: SVGProps<SVGSVGElement>) => ReactElement;
+  const iconMap: Record<string, IconType | SvgIconType> = {
     javascript: SiJavascript,
     typescript: SiTypescript,
     python: SiPython,
@@ -166,12 +169,20 @@ const Skills = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {category.skills.map((skill) => {
                   const IconComponent = getSkillIcon(skill.icon)
+                  // Render SVG icons with SVG props, react-icons with className
+                  const isSvgIcon = typeof IconComponent === 'function' && IconComponent.name.endsWith('Icon')
                   return (
                     <div
                       key={skill.name}
                       className="flex flex-col items-center justify-center p-4 rounded-lg bg-muted/30"
                     >
-                      <IconComponent className="w-8 h-8 text-primary mb-2" />
+                      {IconComponent && (
+                        isSvgIcon ? (
+                          <IconComponent width={32} height={32} style={{ marginBottom: 8, color: 'var(--primary)' }} />
+                        ) : (
+                          <IconComponent className="w-8 h-8 text-primary mb-2" />
+                        )
+                      )}
                       <span className="font-medium text-center text-sm sm:text-base">{skill.name}</span>
                     </div>
                   )

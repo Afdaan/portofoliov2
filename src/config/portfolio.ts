@@ -53,7 +53,7 @@ export const portfolioConfig = {
       { label: "Years Experience", value: "2+" },
       { label: "Projects Completed", value: "20+" },
       { label: "Technologies Used", value: "30+" },
-      { label: "Companies Worked", value: "4+" }
+      { label: "Companies Worked", value: "5+" }
     ]
   },
 
@@ -74,6 +74,23 @@ education: [
   experience: [
     {
       id: 1,
+      company: "RCTI+",
+      position: "DevOps Engineer",
+      period: "Jul 2025 - Present",
+      location: "Jakarta Barat, Indonesia",
+      type: "Full-time",
+      description: "RCTI+ is a leading media and entertainment company in Indonesia, providing a wide range of content and services across various platforms.",
+      responsibilities: [
+        "Developed and maintained CI/CD pipelines for automated deployment",
+        "Managed cloud infrastructure on Alibaba Cloud",
+        "Implemented containerization using Kubernetes and Docker",
+        "Monitored system performance and optimized resource utilization",
+        "Automated infrastructure provisioning using Terraform and Ansible"
+      ],
+      technologies: ["Docker", "Jenkins", "Kubernetes", "Alibaba Cloud", "Vault", "Redpanda", "Shell Scripting", "Linux"]
+    },
+    {
+      id: 2,
       company: "Bitwyre",
       position: "System Administrator",
       period: "Oct 2024 - Mar 2025",
@@ -81,18 +98,16 @@ education: [
       type: "Full-time",
       description: "Bitwyre is a crypto-based financial services platform focused on crypto-to-fiat exchange and investment, officially registered and licensed by BAPPEBTI.",
       responsibilities: [
-        "Monitored market making activities to ensure well-balanced order book operations",
-        "Managed deployment processes using Docker images manually and via Jenkins automation",
-        "Monitored backend services using Lens Kubernetes for optimal performance",
-        "Tracked VM resource usage on Google Cloud Platform (GCP) using Cloud Monitoring",
-        "Configured and managed environment variables using Vault for secure operations",
-        "Monitored message queue topics and lag via Redpanda Dashboard",
-        "Provided developer support and automation using shell scripts for data backup and deletion"
+        "Monitored market making activities for balanced order book operations",
+        "Managed deployment processes using Docker and Jenkins automation",
+        "Monitored backend services using Lens Kubernetes",
+        "Tracked VM resource usage on GCP using Cloud Monitoring",
+        "Configured environment variables using Vault for secure operations"
       ],
       technologies: ["Docker", "Jenkins", "Kubernetes", "GCP", "Vault", "Redpanda", "Shell Scripting", "Linux"]
     },
     {
-      id: 2,
+      id: 3,
       company: "PT. Intersoft Integrasi Infotama (i3)",
       position: "Cloud Engineer",
       period: "Jun 2024 - Mar 2025",
@@ -100,19 +115,16 @@ education: [
       type: "Full-time",
       description: "PT. Intersoft Integrasi Infotama is an Information Technology consulting firm providing solutions to enhance client performance and deliver real business value.",
       responsibilities: [
-        "Managed WHMCS for hosting and VPS services, ensuring seamless client experiences",
-        "Administered Virtualizor for server deployment and monitoring, optimizing resource utilization",
-        "Troubleshot VPS, WHM/cPanel, SMTP, and DNS issues to maintain system reliability",
-        "Configured and deployed Linux & Windows VPS via Virtualizor for enhanced infrastructure flexibility",
-        "Automated server management tasks using Bash scripting to improve operational efficiency",
-        "Executed WHM to WHM migrations via Bash scripts ensuring minimal downtime and data integrity",
-        "Deployed and configured Zimbra Mail Server with secure SMTP, SPF, DKIM, and DMARC settings",
-        "Developed and customized WordPress websites focusing on security and performance optimization"
+        "Managed WHMCS for hosting and VPS services",
+        "Administered Virtualizor for server deployment and monitoring",
+        "Troubleshot VPS, WHM/cPanel, SMTP, and DNS issues",
+        "Configured Linux & Windows VPS via Virtualizor",
+        "Automated server management tasks using Bash scripting"
       ],
       technologies: ["WHMCS", "Virtualizor", "WHM/cPanel", "Zimbra", "Linux", "Windows Server", "Bash", "WordPress", "DNS", "SMTP"]
     },
     {
-      id: 3,
+      id: 4,
       company: "PT Global Intermedia Nusantara",
       position: "Cloud Engineer",
       period: "Oct 2023 - Dec 2023",
@@ -120,17 +132,15 @@ education: [
       type: "Full-time",
       description: "PT Global Intermedia Nusantara is a company specializing in digital solutions and services.",
       responsibilities: [
-        "Managed Proxmox virtualization platform for efficient server resource utilization",
-        "Deployed and managed virtual machine instances for various business applications",
-        "Configured, maintained, and troubleshot Linux-based server environments",
-        "Managed domain registrations, DNS configurations, and hosting services",
-        "Optimized and maintained virtualized server environments for enhanced performance",
-        "Provided technical support for virtualization and server administration tasks"
+        "Managed Proxmox virtualization platform",
+        "Deployed and managed virtual machine instances",
+        "Configured and maintained Linux-based server environments",
+        "Managed domain registrations and DNS configurations"
       ],
       technologies: ["Proxmox", "Linux", "Virtual Machines", "DNS", "Domain Hosting", "Server Administration"]
     },
     {
-      id: 4,
+      id: 5,
       company: "GMEDIA",
       position: "Cloud Engineer", 
       period: "Apr 2023 - Jun 2023",
@@ -138,13 +148,10 @@ education: [
       type: "Full-time",
       description: "GMEDIA is a digital company focusing on technological solutions, including internet services, cloud computing systems, Artificial Intelligence and Internet of Things research laboratories, software and app development, and IT consulting services.",
       responsibilities: [
-        "Deployed, configured, and managed Linux server environments",
-        "Utilized KVM (Kernel-based Virtual Machine) for creating and managing virtual machines",
-        "Configured and maintained web hosting environments for client websites",
-        "Managed email servers and ensured reliable email delivery configuration",
-        "Administered web hosting services using cPanel for efficient management",
-        "Deployed and optimized virtual instances for various applications",
-        "Enhanced skills in server management and virtualization troubleshooting"
+        "Deployed and configured Linux server environments",
+        "Utilized KVM for creating and managing virtual machines",
+        "Configured web hosting environments for client websites",
+        "Managed email servers and delivery configuration"
       ],
       technologies: ["Linux", "KVM", "cPanel", "Email Hosting", "Web Hosting", "Virtual Machines", "Server Management"]
     }

@@ -16,6 +16,19 @@ const About = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
 
+  // Debug logging for Vercel
+  console.log('About component rendering', {
+    experienceCount: portfolioConfig.experience?.length,
+    educationCount: portfolioConfig.education?.length,
+    isInView
+  })
+
+  // Safely check if data exists
+  if (!portfolioConfig.about || !portfolioConfig.experience || !portfolioConfig.education) {
+    console.error('Portfolio config missing required data')
+    return <div>Loading...</div>
+  }
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
@@ -29,6 +42,9 @@ const About = () => {
       }
     }
   }
+
+  // Use simpler rendering if there are too many items
+  const shouldUseSimpleRender = portfolioConfig.experience.length > 4
 
   return (
     <section ref={ref} className="py-20 lg:py-32 relative overflow-hidden">
@@ -67,7 +83,7 @@ const About = () => {
           variants={staggerContainer}
           className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
         >
-          {portfolioConfig.about.stats.map((stat, _) => (
+          {portfolioConfig.about.stats.map((stat) => (
             <motion.div
               key={stat.label}
               variants={fadeInUp}
@@ -96,7 +112,7 @@ const About = () => {
             variants={staggerContainer}
             className="grid grid-cols-2 md:grid-cols-3 gap-4"
           >
-            {portfolioConfig.about.skills.map((skill, _) => (
+            {portfolioConfig.about.skills.map((skill) => (
               <motion.div
                 key={skill}
                 variants={fadeInUp}
@@ -125,7 +141,7 @@ const About = () => {
           </motion.div>
           
           <div className="space-y-6">
-            {portfolioConfig.education.map((edu, _) => (
+            {portfolioConfig.education.map((edu) => (
               <motion.div
                 key={edu.id}
                 variants={fadeInUp}
@@ -172,7 +188,7 @@ const About = () => {
           </motion.div>
           
           <div className="space-y-8">
-            {portfolioConfig.experience.map((exp, _) => (
+            {portfolioConfig.experience.map((exp) => (
               <motion.div
                 key={exp.id}
                 variants={fadeInUp}

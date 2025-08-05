@@ -118,7 +118,7 @@ const Footer = () => {
                 href="mailto:afdaan@example.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
-                afdaan@example.com
+                alif@horn-yastudio.com
               </a>
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((social) => (

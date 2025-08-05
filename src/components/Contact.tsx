@@ -53,7 +53,7 @@ const Contact = () => {
       
       // Reset success message after 5 seconds
       setTimeout(() => setStatus('idle'), 5000)
-    } catch (_) {
+    } catch {
       setStatus('error')
       setTimeout(() => setStatus('idle'), 5000)
     }
@@ -248,7 +248,7 @@ const Contact = () => {
 
             {/* Contact Info Cards */}
             <motion.div variants={staggerContainer} className="space-y-4">
-              {portfolioConfig.contact.contactInfo.map((info, _) => {
+              {portfolioConfig.contact.contactInfo.map((info) => {
                 if (info.icon === 'phone') return null; // Hide phone info for privacy
                 const IconComponent = getIconForContactInfo(info.icon)
                 return (
