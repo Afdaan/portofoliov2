@@ -4,9 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LoadingProvider } from "@/components/LoadingProvider";
 import PreloadPages from "@/components/PreloadPages";
-import Decorations from "@/components/Decorations";
 import Background from "@/components/Background";
-// import Cursor from "@/components/Cursor"; // Uncomment to enable custom cursor
+// Decorations and Cursor disabled for performance
 import { StagewiseToolbar } from "@stagewise/toolbar-next";
 import ReactPlugin from "@stagewise-plugins/react";
 import { portfolioConfig } from "@/config/portfolio";
@@ -63,10 +62,8 @@ export default function RootLayout({
         >
           <LoadingProvider>
             <PreloadPages />
-            <Decorations density={portfolioConfig.components.decorations.density} />
-            {portfolioConfig.components.background.variants.map((variant) => (
-              <Background key={variant} variant={variant} />
-            ))}
+            {/* Lightweight background - only corner character */}
+            <Background variant="corner" />
             {children}
             <StagewiseToolbar 
               config={{

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { useLoading } from '@/components/LoadingProvider'
-import { portfolioConfig } from '@/config/portfolio'
 import Header from '@/components/Header'
 import Projects from '@/components/Projects'
 import Footer from '@/components/Footer'
@@ -14,9 +13,8 @@ export default function ProjectsPage() {
   useEffect(() => {
     startLoading()
     
-    // Much faster loading for mobile
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.projectsPage || 500)
+    // Fast loading for all devices
+    const loadingTime = 200
     
     const timer = setTimeout(() => {
       stopLoading()

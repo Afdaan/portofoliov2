@@ -1,19 +1,12 @@
 "use client"
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import About from '@/components/About'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
 import { portfolioConfig } from '@/config/portfolio'
-
-// Loading fallback component
-const AboutLoading = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="text-lg">Loading About...</div>
-  </div>
-)
 
 // Error fallback component
 const AboutError = ({ error }: { error: Error }) => (
@@ -33,7 +26,6 @@ const AboutError = ({ error }: { error: Error }) => (
 
 export default function AboutPage() {
   const { startLoading, stopLoading } = useLoading()
-  const [mounted, setMounted] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
@@ -43,7 +35,6 @@ export default function AboutPage() {
         throw new Error('Portfolio configuration not found')
       }
       
-      setMounted(true)
       startLoading()
       
       // Much faster loading for mobile
@@ -69,19 +60,12 @@ export default function AboutPage() {
     return <AboutError error={error} />
   }
 
-  // Prevent SSR/hydration mismatches
-  if (!mounted) {
-    return <AboutLoading />
-  }
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="pt-20">
         <PageTransition>
-          <Suspense fallback={<AboutLoading />}>
-            <About />
-          </Suspense>
+          <About />
         </PageTransition>
       </main>
       <Footer />

@@ -6,17 +6,15 @@ import Hero from '@/components/Hero'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
-import { portfolioConfig } from '@/config/portfolio'
 
 export default function Home() {
   const { startLoading, stopLoading } = useLoading()
 
   useEffect(() => {
-    // Initial page load animation - much faster for mobile
+    // Initial page load animation - much faster for all devices
     startLoading()
     
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    const loadingTime = isMobile ? 100 : (portfolioConfig.pageLoading?.homePage || 300)
+    const loadingTime = 200 // Fast loading for all
     
     const timer = setTimeout(() => {
       stopLoading()

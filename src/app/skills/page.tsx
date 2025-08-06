@@ -6,7 +6,6 @@ import Skills from '@/components/Skills'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
-import { portfolioConfig } from '@/config/portfolio'
 
 export default function SkillsPage() {
   const { startLoading, stopLoading } = useLoading()
@@ -14,9 +13,8 @@ export default function SkillsPage() {
   useEffect(() => {
     startLoading()
     
-    // Much faster loading for mobile
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.skillsPage || 500)
+    // Fast loading for all devices
+    const loadingTime = 200
     
     const timer = setTimeout(() => {
       stopLoading()

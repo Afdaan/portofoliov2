@@ -6,7 +6,6 @@ import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 import PageTransition from '@/components/PageTransition'
 import { useLoading } from '@/components/LoadingProvider'
-import { portfolioConfig } from '@/config/portfolio'
 
 export default function ContactPage() {
   const { startLoading, stopLoading } = useLoading()
@@ -14,9 +13,8 @@ export default function ContactPage() {
   useEffect(() => {
     startLoading()
     
-    // Much faster loading for mobile
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    const loadingTime = isMobile ? 200 : (portfolioConfig.pageLoading?.contactPage || 500)
+    // Fast loading for all devices
+    const loadingTime = 200
     
     const timer = setTimeout(() => {
       stopLoading()

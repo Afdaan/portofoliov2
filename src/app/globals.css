@@ -21,6 +21,8 @@
   --border: #bcc0cc;
   --input: #ccd0da;
   --ring: #1e66f5;
+  --primary-rgb: 30, 102, 245;
+  --accent-rgb: 114, 135, 253;
 }
 
 .dark {
@@ -44,6 +46,8 @@
   --border: #51576d;
   --input: #414559;
   --ring: #8caaee;
+  --primary-rgb: 140, 170, 238;
+  --accent-rgb: 186, 187, 241;
 }
 
 body {
@@ -53,9 +57,9 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom scrollbar */
+/* Optimized scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -64,7 +68,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--muted);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -82,7 +86,7 @@ html {
   color: var(--background);
 }
 
-/* Animations */
+/* Lightweight essential animations only */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -90,12 +94,78 @@ html {
 
 @keyframes slideUp {
   from { 
-    transform: translateY(30px); 
+    transform: translateY(20px); 
     opacity: 0; 
   }
   to { 
     transform: translateY(0); 
     opacity: 1; 
+  }
+}
+
+@keyframes bounceGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Essential utility classes */
+.animate-fade-in { animation: fadeIn 0.6s ease-out; }
+.animate-slide-up { animation: slideUp 0.6s ease-out; }
+.animate-bounce-gentle { animation: bounceGentle 2s infinite; }
+.animate-pulse-soft { animation: pulseSoft 2s infinite; }
+
+/* Performance optimizations */
+* {
+  /* Reduce repaint/reflow */
+  will-change: auto;
+}
+
+/* Mobile performance optimizations */
+@media (max-width: 768px) {
+  /* Disable expensive effects on mobile */
+  .animate-bounce-gentle,
+  .animate-pulse-soft {
+    animation: none !important;
+  }
+  
+  /* Reduce transition durations */
+  * {
+    transition-duration: 0.15s !important;
+    animation-duration: 0.3s !important;
+  }
+  
+  /* Disable blur effects */
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .blur-sm,
+  .blur-md,
+  .blur-lg,
+  .blur-xl,
+  .blur-2xl,
+  .blur-3xl {
+    filter: none !important;
+  }
+}
+
+/* Disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
